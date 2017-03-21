@@ -6,5 +6,52 @@
 </head>
 <body>
 <h1>LemIPC</h1>
+<canvas id="cnv" width="500" height="500"></canvas>
+<script type="text/javascript">
+    const drawGridLines = (cnv, lineOptions) => {
+        const iWidth = cnv.width
+        const iHeight = cnv.height
+        const ctx = cnv.getContext('2d')
+
+        ctx.strokeStyle = lineOptions.color
+        ctx.strokeWidth = 1
+
+        ctx.beginPath()
+
+        let iCount;
+
+        iCount = Math.floor(iWidth / lineOptions.separation)
+
+        for (let i = 1; i <= iCount; ++i) {
+            let x = (i * lineOptions.separation)
+            ctx.moveTo(x, 0)
+            ctx.lineTo(x, iHeight)
+            ctx.stroke()
+        }
+
+        iCount = Math.floor(iHeight / lineOptions.separation)
+
+        for (let i = 1; i <= iCount; ++i) {
+            let y = (i * lineOptions.separation)
+            ctx.moveTo(0, y)
+            ctx.lineTo(iWidth, y)
+            ctx.stroke()
+        }
+        ctx.closePath()
+    }
+
+    const drawGrid = () => {
+        const cnv = document.getElementById("cnv")
+        const gridOptions = {
+            majorLines: {
+                separation: 30,
+                color: '#FF0000'
+            }
+        }
+        drawGridLines(cnv, gridOptions.majorLines)
+    }
+
+    drawGrid()
+</script>
 </body>
 </html>
