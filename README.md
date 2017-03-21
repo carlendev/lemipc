@@ -1,2 +1,1 @@
-# lemipc
-lemipc for epitech
+Find your mates Server
