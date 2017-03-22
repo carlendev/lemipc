@@ -1,1 +1,1 @@
-Find your mates Server
+LemIPC for EPITECH
