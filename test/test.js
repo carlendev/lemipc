@@ -7,7 +7,7 @@ const request = require('supertest').agent(app.listen())
 describe('with valid credentials', () => {
     it('should call the next middleware', (done) => {
       request
-        .get('/rooms')
+        .get('/map')
         .expect(200, done)
     })
 })

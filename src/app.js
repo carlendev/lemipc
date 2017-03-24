@@ -17,13 +17,13 @@ const db = {
         'hub'
     ]
 }
-
-const rooms = {
-    list: (ctx) => {
-        ctx.body = {rooms: db.rooms}
+*/
+const map = {
+    content: (ctx) => {
+        ctx.body = {map: 'ok'}
     }
 }
-*/
+
 
 app.use(async (ctx, next) => {
     const start = new Date()
@@ -32,7 +32,7 @@ app.use(async (ctx, next) => {
     console.log(`${ctx.method} ${ctx.url} - ${ms} ms`)
 });
 
-//app.use(_.get('/rooms', rooms.list))
+app.use(_.get('/map', map.content))
 
 app.listen(3030)
 
