@@ -8,22 +8,11 @@ const app = new Koa()
 
 const db = createClient()
 
-/*
-const db = {
-    rooms: [
-        'sm1',
-        'sm2',
-        'sm3',
-        'hub'
-    ]
-}
-*/
 const map = {
     content: (ctx) => {
         ctx.body = {map: 'ok'}
     }
 }
-
 
 app.use(async (ctx, next) => {
     const start = new Date()
