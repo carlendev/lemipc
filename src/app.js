@@ -18,9 +18,7 @@ const generateMap = size => {
 const initMap = size => db.set('map', generateMap(size).toString())
 
 const map = {
-    content: (ctx) => {
-        ctx.body = {map: 'ok'}
-    }
+    content: async ctx => ctx.body = { map: await db.get('map') }
 }
 
 app.use(async (ctx, next) => {
@@ -34,4 +32,4 @@ app.use(_.get('/map', map.content))
 
 Promise.all([initMap(size)]).then(app.listen(3030))
 
-export { app }
+export { app, generateMap, size }
