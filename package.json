@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "concurrently": "^3.4.0",
-    "http-server": "^0.9.0"
+    "http-server": "^0.9.0",
+    "then-redis": "^2.0.1"
   }
 }

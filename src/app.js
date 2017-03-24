@@ -5,6 +5,7 @@ import Koa from 'koa'
 import _ from 'koa-route'
 const app = new Koa()
 
+/*
 const db = {
     rooms: [
         'sm1',
@@ -19,6 +20,7 @@ const rooms = {
         ctx.body = {rooms: db.rooms}
     }
 }
+*/
 
 app.use(async (ctx, next) => {
     const start = new Date()
@@ -27,7 +29,7 @@ app.use(async (ctx, next) => {
     console.log(`${ctx.method} ${ctx.url} - ${ms} ms`)
 });
 
-app.use(_.get('/rooms', rooms.list))
+//app.use(_.get('/rooms', rooms.list))
 
 app.listen(3030)
 
