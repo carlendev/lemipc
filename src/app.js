@@ -6,7 +6,16 @@ import _ from 'koa-route'
 import { createClient } from 'then-redis'
 const app = new Koa()
 
+const size = 17
 const db = createClient()
+
+const fill = (nb, value) => Array(nb).fill(value)
+const generateMap = size => {
+    let array = fill(17, [])
+    for (let i = 0; i < size; ++i) array[i] = fill(17, 0)
+    return array
+}
+const initMap = size => db.set('map', generateMap(size).toString())
 
 const map = {
     content: (ctx) => {
@@ -23,6 +32,6 @@ app.use(async (ctx, next) => {
 
 app.use(_.get('/map', map.content))
 
-app.listen(3030)
+Promise.all([initMap(size)]).then(app.listen(3030))
 
 export { app }
