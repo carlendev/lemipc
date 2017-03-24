@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "concurrently \"nodemon ./src/app.js --exec babel-node\" \"http-server -p 8000 -c 1 dist\"",
-    "test": "mocha --compilers js:babel-register"
+    "test": "mocha --compilers js:babel-core/register --require babel-polyfill"
   },
   "author": "Yann Carlen, Quentin Muller",
   "depenencies": {
@@ -13,6 +13,8 @@
   },
   "devDependencies": {
     "babel-cli": "^6.23.0",
+    "babel-core": "^6.24.0",
+    "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-es2017": "^6.22.0",
     "babel-preset-stage-2": "^6.22.0",
@@ -24,6 +26,8 @@
   "dependencies": {
     "concurrently": "^3.4.0",
     "http-server": "^0.9.0",
+    "redis": "^2.7.1",
+    "redis-commands": "^1.3.1",
     "then-redis": "^2.0.1"
   }
 }

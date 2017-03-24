@@ -3,7 +3,10 @@
  */
 import Koa from 'koa'
 import _ from 'koa-route'
+import { createClient } from 'then-redis'
 const app = new Koa()
+
+const db = createClient()
 
 /*
 const db = {
