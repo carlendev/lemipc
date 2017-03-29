@@ -4,14 +4,16 @@
 import Koa from 'koa'
 import _ from 'koa-route'
 import Router from 'koa-trie-router'
-import { createClient } from 'then-redis'
 import cors from 'koa2-cors'
 import RedisMQ from 'rsmq'
+import bodyParser from 'koa-bodyparser';
+import { createClient } from 'then-redis'
 
 const app = new Koa()
 const router = new Router()
 
 app.use(cors())
+app.use(bodyParser())
 
 const wesh = msg => console.log(msg)
 const size = 17
@@ -31,8 +33,7 @@ const generateMap = size => {
 const getRandom = max => Math.floor(Math.random() * max) + 1
 
 const generateMapObj = (size, map) => {
-    for (let i = 0; i < size; ++i)
-        for (let j = 0; j < size; ++j) map[i][j] = getRandom(maxRandom)
+    for (let i = 0; i < size; ++i) for (let j = 0; j < size; ++j) map[i][j] = getRandom(maxRandom)
     return JSON.stringify({
         cols: size,
         rows: size,
@@ -57,7 +58,15 @@ const listenQueue = () => {
 }
 
 const map = {
-    generate: ctx => {},
+    generate: async ctx => {
+        const value = ctx.request.body
+        if (isNaN(value.size) || parseInt(value.size) < 5) {
+            ctx.throw('size must be a number ang greater than 5', 400)
+            return
+        }
+        await initMap(parseInt(value.size))
+        ctx.body = { status: 'Map saved' }
+    },
     content: async ctx => ctx.body = { map: await db.get('map') },
 }
 
