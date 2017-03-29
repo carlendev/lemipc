@@ -2,9 +2,11 @@
 // Asset loader
 //
 
-var Loader = {
+const wesh = msg => console.log(msg)
+
+const Loader = {
     images: {}
-};
+}
 
 Loader.loadImage = function (key, src) {
     var img = new Image();
@@ -15,7 +17,7 @@ Loader.loadImage = function (key, src) {
             resolve(img);
         }.bind(this);
 
-        img.onerror = function () {
+        img.onerror = () => {
             reject('Could not load image: ' + src);
         };
     }.bind(this));
@@ -32,7 +34,7 @@ Loader.getImage = function (key) {
 // Keyboard handler
 //
 
-var Keyboard = {};
+const Keyboard = {};
 
 Keyboard.LEFT = 37;
 Keyboard.RIGHT = 39;
@@ -41,7 +43,7 @@ Keyboard.DOWN = 40;
 
 Keyboard._keys = {};
 
-Keyboard.listenForEvents = function (keys) {
+Keyboard.listenForEvents = (keys) => {
     window.addEventListener('keydown', this._onKeyDown.bind(this));
     window.addEventListener('keyup', this._onKeyUp.bind(this));
 
@@ -50,7 +52,7 @@ Keyboard.listenForEvents = function (keys) {
     }.bind(this));
 }
 
-Keyboard._onKeyDown = function (event) {
+Keyboard._onKeyDown = (event) => {
     var keyCode = event.keyCode;
     if (keyCode in this._keys) {
         event.preventDefault();
@@ -58,7 +60,7 @@ Keyboard._onKeyDown = function (event) {
     }
 };
 
-Keyboard._onKeyUp = function (event) {
+Keyboard._onKeyUp = (event) => {
     var keyCode = event.keyCode;
     if (keyCode in this._keys) {
         event.preventDefault();
@@ -66,7 +68,7 @@ Keyboard._onKeyUp = function (event) {
     }
 };
 
-Keyboard.isDown = function (keyCode) {
+Keyboard.isDown = (keyCode) => {
     if (!keyCode in this._keys) {
         throw new Error('Keycode ' + keyCode + ' is not being listened to');
     }
@@ -77,24 +79,33 @@ Keyboard.isDown = function (keyCode) {
 // Game object
 //
 
-var Game = {};
+const Game = {};
+let map;
+let context;
 
-Game.run = function (context) {
-    this.ctx = context;
-    this._previousElapsed = 0;
 
-    var p = this.load();
-    Promise.all(p).then(function (loaded) {
-        this.init();
-        window.requestAnimationFrame(this.tick);
-    }.bind(this));
+Game.init = () => {
+    Game.tileAtlas = Loader.getImage('tiles');
+};
+
+Game.update = (delta) => {
+};
+
+Game.run = () => {
+    Game._previousElapsed = 0;
+
+    Promise.all(load()).then(function (loaded) {
+        Game.init();
+        this.render(map);
+        window.requestAnimationFrame(Game.tick);
+    }.bind(Game));
 };
 
 Game.tick = function (elapsed) {
     window.requestAnimationFrame(this.tick);
 
     // clear previous frame
-    this.ctx.clearRect(0, 0, 512, 512);
+    context.clearRect(0, 0, 512, 512);
 
     // compute delta time in seconds -- also cap it
     var delta = (elapsed - this._previousElapsed) / 1000.0;
@@ -102,19 +113,23 @@ Game.tick = function (elapsed) {
     this._previousElapsed = elapsed;
 
     this.update(delta);
-    this.render();
+    this.render(map);
 }.bind(Game);
 
 // override these methods to create the demo
-Game.init = function () {};
-Game.update = function (delta) {};
-Game.render = function () {};
 
 //
 // start up function
 //
 
-window.onload = function () {
-    var context = document.getElementById('demo').getContext('2d');
-    Game.run(context);
+const start = () => {
+    axios.get('http://127.0.0.1:3030/api/map/obj')
+        .then(response => {
+            map = response.data.map
+            context = document.getElementById('demo').getContext('2d')
+            Game.run()
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 };
