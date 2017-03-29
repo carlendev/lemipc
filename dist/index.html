@@ -1,57 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" type="text/css" href="styles.css" media="screen" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <title>LemIPC</title>
 </head>
-<body>
-<h1>LemIPC</h1>
-<canvas id="cnv" width="500" height="500"></canvas>
-<script type="text/javascript">
-    const drawGridLines = (cnv, lineOptions) => {
-        const iWidth = cnv.width
-        const iHeight = cnv.height
-        const ctx = cnv.getContext('2d')
+    <body>
+        <div class="container-fluid">
+            <ul class="nav nav-pills">
+                <li role="presentation" class="active"><a href="#">LemIPC</a></li>
+            </ul>
+        </div>
+        <div class="grid">
+            <div class="canvas">
+                <canvas id="cnv" width="500" height="500"></canvas>
+            </div>
+        </div>
+    <script type="text/javascript">
+        const drawGridLines = (cnv, lineOptions) => {
+            const iWidth = cnv.width
+            const iHeight = cnv.height
+            const ctx = cnv.getContext('2d')
 
-        ctx.strokeStyle = lineOptions.color
-        ctx.strokeWidth = 1
+            ctx.strokeStyle = lineOptions.color
+            ctx.strokeWidth = 1
 
-        ctx.beginPath()
+            ctx.beginPath()
 
-        let iCount;
+            let iCount;
 
-        iCount = Math.floor(iWidth / lineOptions.separation)
+            iCount = Math.floor(iWidth / lineOptions.separation)
 
-        for (let i = 1; i <= iCount; ++i) {
-            let x = (i * lineOptions.separation)
-            ctx.moveTo(x, 0)
-            ctx.lineTo(x, iHeight)
-            ctx.stroke()
-        }
-
-        iCount = Math.floor(iHeight / lineOptions.separation)
-
-        for (let i = 1; i <= iCount; ++i) {
-            let y = (i * lineOptions.separation)
-            ctx.moveTo(0, y)
-            ctx.lineTo(iWidth, y)
-            ctx.stroke()
-        }
-        ctx.closePath()
-    }
-
-    const drawGrid = () => {
-        const cnv = document.getElementById("cnv")
-        const gridOptions = {
-            majorLines: {
-                separation: 30,
-                color: '#FF0000'
+            for (let i = 1; i <= iCount; ++i) {
+                let x = (i * lineOptions.separation)
+                ctx.moveTo(x, 0)
+                ctx.lineTo(x, iHeight)
+                ctx.stroke()
             }
+
+            iCount = Math.floor(iHeight / lineOptions.separation)
+
+            for (let i = 1; i <= iCount; ++i) {
+                let y = (i * lineOptions.separation)
+                ctx.moveTo(0, y)
+                ctx.lineTo(iWidth, y)
+                ctx.stroke()
+            }
+            ctx.closePath()
         }
-        drawGridLines(cnv, gridOptions.majorLines)
-    }
-//17x17
-    drawGrid()
-</script>
-</body>
+
+        const drawGrid = () => {
+            const cnv = document.getElementById("cnv")
+            const gridOptions = {
+                majorLines: {
+                    separation: 30,
+                    color: '#FF0000'
+                }
+            }
+            drawGridLines(cnv, gridOptions.majorLines)
+        }
+    //17x17
+        drawGrid()
+    </script>
+    </body>
 </html>
