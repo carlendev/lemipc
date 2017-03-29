@@ -44,35 +44,35 @@ Keyboard.DOWN = 40;
 Keyboard._keys = {};
 
 Keyboard.listenForEvents = (keys) => {
-    window.addEventListener('keydown', this._onKeyDown.bind(this));
-    window.addEventListener('keyup', this._onKeyUp.bind(this));
+    window.addEventListener('keydown', Keyboard._onKeyDown.bind(Keyboard));
+    window.addEventListener('keyup', Keyboard._onKeyUp.bind(Keyboard));
 
     keys.forEach(function (key) {
-        this._keys[key] = false;
-    }.bind(this));
+        Keyboard._keys[key] = false;
+    }.bind(Keyboard));
 }
 
 Keyboard._onKeyDown = (event) => {
     var keyCode = event.keyCode;
-    if (keyCode in this._keys) {
+    if (keyCode in Keyboard._keys) {
         event.preventDefault();
-        this._keys[keyCode] = true;
+        Keyboard._keys[keyCode] = true;
     }
 };
 
 Keyboard._onKeyUp = (event) => {
     var keyCode = event.keyCode;
-    if (keyCode in this._keys) {
+    if (keyCode in Keyboard._keys) {
         event.preventDefault();
-        this._keys[keyCode] = false;
+        Keyboard._keys[keyCode] = false;
     }
 };
 
 Keyboard.isDown = (keyCode) => {
-    if (!keyCode in this._keys) {
+    if (!keyCode in Keyboard._keys) {
         throw new Error('Keycode ' + keyCode + ' is not being listened to');
     }
-    return this._keys[keyCode];
+    return Keyboard._keys[keyCode];
 };
 
 //
