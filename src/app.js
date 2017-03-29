@@ -3,15 +3,12 @@
  */
 import Koa from 'koa'
 import _ from 'koa-route'
-const router = require('koa-router')();
 import { createClient } from 'then-redis'
 import cors from 'kcors'
 import RedisMQ from 'rsmq'
 const app = new Koa()
 
-app.use(router.routes())
-    .use(router.allowedMethods())
-    .use(cors())
+app.use(cors())
 
 const wesh = msg => console.log(msg)
 const size = 17
