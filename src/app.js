@@ -4,7 +4,7 @@
 import Koa from 'koa'
 import _ from 'koa-route'
 import { createClient } from 'then-redis'
-import cors from 'kcors'
+import cors from 'koa2-cors'
 import RedisMQ from 'rsmq'
 const app = new Koa()
 
