@@ -3,10 +3,13 @@
  */
 import Koa from 'koa'
 import _ from 'koa-route'
+import Router from 'koa-trie-router'
 import { createClient } from 'then-redis'
 import cors from 'koa2-cors'
 import RedisMQ from 'rsmq'
+
 const app = new Koa()
+const router = new Router()
 
 app.use(cors())
 
@@ -66,7 +69,10 @@ app.use(async (ctx, next) => {
 });
 
 app.use(_.get('/api/map', map.content))
-//app.use(_.put('/api/map', map.generate))
+
+router.put('/api/map', map.generate)
+
+app.use(router.middleware())
 
 Promise.all([initMap(size), createQueue(), listenQueue()]).then(app.listen(3030))
 
