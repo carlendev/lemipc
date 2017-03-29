@@ -10,24 +10,12 @@ const app = new Koa()
 
 app.use(cors())
 
+const wesh = msg => console.log(msg)
 const size = 17
+const tsize = 32
+const maxRandom = 3
 const db = createClient()
 const rsmq = new RedisMQ({ host: "127.0.0.1", port: 6379, ns: "rsmq" })
-const mapObj = {
-    cols: 8,
-    rows: 8,
-    tsize: 64,
-    tiles: [
-        1, 3, 3, 3, 1, 1, 3, 1,
-        1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 2, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 2, 1, 1, 1, 1,
-        1, 1, 1, 1, 2, 1, 1, 1,
-        1, 1, 1, 1, 2, 1, 1, 1,
-        1, 1, 1, 1, 2, 1, 1, 1
-    ]
-}
 
 const fill = (nb, value) => Array(nb).fill(value)
 
@@ -37,7 +25,19 @@ const generateMap = size => {
     return array
 }
 
-const initMap = size => db.set('map', generateMap(size).toString())
+const getRandom = max => Math.floor(Math.random() * max) + 1
+
+const generateMapObj = (size, map) => {
+    for (let i = 0; i < size; ++i) for (let j = 0; j < size; ++j) map[i][j] = getRandom(maxRandom)
+    return {
+        cols: size,
+        rows: size,
+        tsize,
+        tiles: map
+    }
+}
+
+const initMap = size => db.set('map', generateMapObj(size, generateMap(size)).toString())
 
 const createQueue = () => {
     rsmq.createQueue({ qname: 'lemipc' }, (err, resp) => {
@@ -54,7 +54,6 @@ const listenQueue = () => {
 
 const map = {
     content: async ctx => ctx.body = {map: await db.get('map')},
-    obj: ctx => ctx.body = { map: mapObj }
 }
 
 app.use(async (ctx, next) => {
@@ -65,8 +64,7 @@ app.use(async (ctx, next) => {
 });
 
 app.use(_.get('/api/map', map.content))
-app.use(_.get('/api/map/obj/', map.obj))
 
 Promise.all([initMap(size), createQueue(), listenQueue()]).then(app.listen(3030))
 
-export { app, generateMap, size, mapObj }
+export { app, generateMap, generateMapObj, size}
