@@ -29,15 +29,15 @@ const getRandom = max => Math.floor(Math.random() * max) + 1
 
 const generateMapObj = (size, map) => {
     for (let i = 0; i < size; ++i) for (let j = 0; j < size; ++j) map[i][j] = getRandom(maxRandom)
-    return {
+    return JSON.stringify({
         cols: size,
         rows: size,
         tsize,
         tiles: map
-    }
+    })
 }
 
-const initMap = size => db.set('map', generateMapObj(size, generateMap(size)).toString())
+const initMap = size => db.set('map', generateMapObj(size, generateMap(size)))
 
 const createQueue = () => {
     rsmq.createQueue({ qname: 'lemipc' }, (err, resp) => {
