@@ -41,30 +41,32 @@ const initMap = size => db.set('map', generateMapObj(size, generateMap(size)).to
 
 const createQueue = () => {
     rsmq.createQueue({ qname: 'lemipc' }, (err, resp) => {
-        if (resp == 1) console.log('queue created')
+        if (resp == 1) wesh('queue created')
     })
 }
 
 const listenQueue = () => {
     rsmq.receiveMessage({ qname: 'lemipc' }, (err, resp) => {
-        if (resp.id) console.log('Message received.', resp)
-        else console.log('No messages for me...')
+        if (resp.id) wesh('Message received.', resp)
+        else wesh('No messages for me...')
     })
 }
 
 const map = {
-    content: async ctx => ctx.body = {map: await db.get('map')},
+    generate: ctx => {},
+    content: async ctx => ctx.body = { map: await db.get('map') },
 }
 
 app.use(async (ctx, next) => {
     const start = new Date()
     await next()
     const ms = new Date() - start
-    console.log(`${ctx.method} ${ctx.url} - ${ms} ms`)
+    wesh(`${ctx.method} ${ctx.url} - ${ms} ms`)
 });
 
 app.use(_.get('/api/map', map.content))
+//app.use(_.put('/api/map', map.generate))
 
 Promise.all([initMap(size), createQueue(), listenQueue()]).then(app.listen(3030))
 
-export { app, generateMap, generateMapObj, size}
+export { app, generateMap, generateMapObj, size }
