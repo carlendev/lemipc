@@ -20,15 +20,16 @@ const rsmq = new RedisMQ({ host: "127.0.0.1", port: 6379, ns: "rsmq" })
 const fill = (nb, value) => Array(nb).fill(value)
 
 const generateMap = size => {
-    let array = fill(17, [])
-    for (let i = 0; i < size; ++i) array[i] = fill(17, 0)
+    let array = fill(size, [])
+    for (let i = 0; i < size; ++i) array[i] = fill(size, 0)
     return array
 }
 
 const getRandom = max => Math.floor(Math.random() * max) + 1
 
 const generateMapObj = (size, map) => {
-    for (let i = 0; i < size; ++i) for (let j = 0; j < size; ++j) map[i][j] = getRandom(maxRandom)
+    for (let i = 0; i < size; ++i)
+        for (let j = 0; j < size; ++j) map[i][j] = getRandom(maxRandom)
     return JSON.stringify({
         cols: size,
         rows: size,

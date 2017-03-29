@@ -125,7 +125,7 @@ Game.tick = function (elapsed) {
 const start = () => {
     axios.get('http://127.0.0.1:3030/api/map')
         .then(response => {
-            map = response.data.map
+            map = JSON.parse(response.data.map)
             context = document.getElementById('demo').getContext('2d')
             Game.run()
         })
