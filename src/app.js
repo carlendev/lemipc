@@ -4,11 +4,11 @@
 import Koa from 'koa'
 import _ from 'koa-route'
 import { createClient } from 'then-redis'
-import cors from 'kcors';
+import cors from 'kcors'
 import RedisMQ from 'rsmq'
 const app = new Koa()
 
-app.use(cors());
+app.use(cors())
 
 const size = 17
 const db = createClient()
@@ -30,17 +30,21 @@ const mapObj = {
 }
 
 const fill = (nb, value) => Array(nb).fill(value)
+
 const generateMap = size => {
     let array = fill(17, [])
     for (let i = 0; i < size; ++i) array[i] = fill(17, 0)
     return array
 }
+
 const initMap = size => db.set('map', generateMap(size).toString())
+
 const createQueue = () => {
     rsmq.createQueue({ qname: 'lemipc' }, (err, resp) => {
         if (resp == 1) console.log('queue created')
     })
 }
+
 const listenQueue = () => {
     rsmq.receiveMessage({ qname: 'lemipc' }, (err, resp) => {
         if (resp.id) console.log('Message received.', resp)
