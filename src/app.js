@@ -6,14 +6,17 @@ import _ from 'koa-route'
 import Router from 'koa-trie-router'
 import cors from 'koa2-cors'
 import RedisMQ from 'rsmq'
-import bodyParser from 'koa-bodyparser';
+import bodyParser from 'koa-bodyparser'
+import IO from 'koa-socket'
 import { createClient } from 'then-redis'
 
 const app = new Koa()
+const io = new IO()
 const router = new Router()
 
 app.use(cors())
 app.use(bodyParser())
+io.attach(app)
 
 const wesh = msg => console.log(msg)
 const size = 17

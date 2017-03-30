@@ -4,8 +4,8 @@ const load = () => [Loader.loadImage('tiles', '/assets/tiles.png'), Loader.loadI
 
 Game.render = (map) => {
     //pos begin 0
-    axios.get('http://127.0.0.1:3030/api/player/pos')
-        .then(response => {
+    //axios.get('http://127.0.0.1:3030/api/player/pos')
+     //   .then(response => {
             for (let c = 0; c < map.cols; c++) {
                 for (let r = 0; r < map.rows; r++) {
                     var tile = getTile(c, r, map)
@@ -24,7 +24,7 @@ Game.render = (map) => {
                     }
                 }
             }
-            context.drawImage(
+       /*     context.drawImage(
                 Game.tilePlayer,
                 0,
                 0,
@@ -38,5 +38,5 @@ Game.render = (map) => {
         })
         .catch(err => {
             wesh(err)
-        });
+        });*/
 }
