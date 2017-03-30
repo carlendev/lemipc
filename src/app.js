@@ -60,9 +60,8 @@ const listenQueue = () => {
 const map = {
     generate: async ctx => {
         const value = ctx.request.body
-        wesh(value)
         if (isNaN(value.size) || parseInt(value.size) < 5) {
-            ctx.throw('size must be a number ang greater than 5', 400)
+            ctx.throw('Size must be a number ang greater than 5', 400)
             return
         }
         await initMap(parseInt(value.size))

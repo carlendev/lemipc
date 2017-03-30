@@ -1,6 +1,6 @@
 const getTile = (col, row, map) => map.tiles[col][row];
 
-const load = () => [Loader.loadImage('tiles', '/assets/tiles.png')]
+const load = () => [Loader.loadImage('tiles', '/assets/tiles.png'), Loader.loadImage('player', '/assets/player.png')]
 
 Game.render = (map) => {
     for (let c = 0; c < map.cols; c++) {

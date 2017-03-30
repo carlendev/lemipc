@@ -9,112 +9,112 @@ const Loader = {
 }
 
 Loader.loadImage = function (key, src) {
-    var img = new Image();
+    var img = new Image()
 
     var d = new Promise(function (resolve, reject) {
         img.onload = function () {
-            this.images[key] = img;
-            resolve(img);
-        }.bind(this);
+            this.images[key] = img
+            resolve(img)
+        }.bind(this)
 
         img.onerror = () => {
-            reject('Could not load image: ' + src);
-        };
-    }.bind(this));
+            reject('Could not load image: ' + src)
+        }
+    }.bind(this))
 
-    img.src = src;
-    return d;
+    img.src = src
+    return d
 };
 
 Loader.getImage = function (key) {
-    return (key in this.images) ? this.images[key] : null;
-};
+    return (key in this.images) ? this.images[key] : null
+}
 
 //
 // Keyboard handler
 //
 
-const Keyboard = {};
+const Keyboard = {}
 
-Keyboard.LEFT = 37;
-Keyboard.RIGHT = 39;
-Keyboard.UP = 38;
-Keyboard.DOWN = 40;
+Keyboard.LEFT = 37
+Keyboard.RIGHT = 39
+Keyboard.UP = 38
+Keyboard.DOWN = 40
 
-Keyboard._keys = {};
+Keyboard._keys = {}
 
 Keyboard.listenForEvents = (keys) => {
-    window.addEventListener('keydown', Keyboard._onKeyDown.bind(Keyboard));
-    window.addEventListener('keyup', Keyboard._onKeyUp.bind(Keyboard));
+    window.addEventListener('keydown', Keyboard._onKeyDown.bind(Keyboard))
+    window.addEventListener('keyup', Keyboard._onKeyUp.bind(Keyboard))
 
     keys.forEach(function (key) {
-        Keyboard._keys[key] = false;
-    }.bind(Keyboard));
+        Keyboard._keys[key] = false
+    }.bind(Keyboard))
 }
 
 Keyboard._onKeyDown = (event) => {
-    var keyCode = event.keyCode;
+    var keyCode = event.keyCode
     if (keyCode in Keyboard._keys) {
-        event.preventDefault();
-        Keyboard._keys[keyCode] = true;
+        event.preventDefault()
+        Keyboard._keys[keyCode] = true
     }
-};
+}
 
 Keyboard._onKeyUp = (event) => {
-    var keyCode = event.keyCode;
+    var keyCode = event.keyCode
     if (keyCode in Keyboard._keys) {
-        event.preventDefault();
-        Keyboard._keys[keyCode] = false;
+        event.preventDefault()
+        Keyboard._keys[keyCode] = false
     }
-};
+}
 
 Keyboard.isDown = (keyCode) => {
     if (!keyCode in Keyboard._keys) {
-        throw new Error('Keycode ' + keyCode + ' is not being listened to');
+        throw new Error('Keycode ' + keyCode + ' is not being listened to')
     }
-    return Keyboard._keys[keyCode];
-};
+    return Keyboard._keys[keyCode]
+}
 
 //
 // Game object
 //
 
-const Game = {};
-let map;
-let context;
-
+const Game = {}
+let map
+let context
 
 Game.init = () => {
-    Game.tileAtlas = Loader.getImage('tiles');
-};
+    Game.tileAtlas = Loader.getImage('tiles')
+    Game.tilePlayer = Loader.getImage('player')
+}
 
 Game.update = (delta) => {
-};
+}
 
 Game.run = () => {
-    Game._previousElapsed = 0;
+    Game._previousElapsed = 0
 
     Promise.all(load()).then(function (loaded) {
-        Game.init();
-        this.render(map);
-        window.requestAnimationFrame(Game.tick);
-    }.bind(Game));
+        Game.init()
+        this.render(map)
+        window.requestAnimationFrame(Game.tick)
+    }.bind(Game))
 };
 
 Game.tick = function (elapsed) {
-    window.requestAnimationFrame(this.tick);
+    window.requestAnimationFrame(this.tick)
 
     // clear previous frame
-    context.clearRect(0, 0, 512, 512);
+    context.clearRect(0, 0, 512, 512)
 
     // compute delta time in seconds -- also cap it
-    var delta = (elapsed - this._previousElapsed) / 1000.0;
-    delta = Math.min(delta, 0.25); // maximum delta of 250 ms
-    this._previousElapsed = elapsed;
+    var delta = (elapsed - this._previousElapsed) / 1000.0
+    delta = Math.min(delta, 0.25) // maximum delta of 250 ms
+    this._previousElapsed = elapsed
 
-    this.update(delta);
-    this.render(map);
-}.bind(Game);
+    this.update(delta)
+    this.render(map)
+}.bind(Game)
 
 // override these methods to create the demo
 
@@ -130,6 +130,6 @@ const start = () => {
             Game.run()
         })
         .catch((error) => {
-            console.log(error);
+            wesh(error)
         });
 };
