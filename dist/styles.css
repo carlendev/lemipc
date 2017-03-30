@@ -18,6 +18,14 @@ html {
     margin-top: 100px;
 }
 
+.sizeFont {
+    font-size: 250%;
+}
+
+.formStyle {
+    display: inline-block;
+}
+
 .canvas {
     display: inline-block;
 }
