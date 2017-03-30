@@ -53,12 +53,14 @@ const createQueue = () => {
     })
 }
 
+/*
 const listenQueue = () => {
     rsmq.receiveMessage({ qname: 'lemipc' }, (err, resp) => {
         if (resp.id) wesh('Message received.', resp)
         else wesh('No messages for me...')
     })
 }
+*/
 
 const getPos = (x, y, team, player) => JSON.stringify({ x, y, team, player })
 
@@ -78,6 +80,7 @@ const map = {
     content: async ctx => ctx.body = { map: await db.get('map') },
 }
 
+//TODO(carlendev) check same pos
 const player = {
     generate: async ctx => {
         const value = ctx.request.body
@@ -112,6 +115,6 @@ app._io.on('connection', sock => {
     wesh('browser connected')
 })
 
-Promise.all([initMap(_size), createQueue(), listenQueue()]).then(app.listen(3030))
+Promise.all([db.send('FLUSHALL', []) ,initMap(_size), createQueue()]).then(app.listen(3030))
 
 export { app }
