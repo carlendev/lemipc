@@ -115,6 +115,6 @@ app._io.on('connection', sock => {
     wesh('browser connected')
 })
 
-Promise.all([db.send('FLUSHALL', []) ,initMap(_size), createQueue()]).then(app.listen(3030))
+Promise.all([db.send('FLUSHALL', [])]).then(() => Promise.all([initMap(_size), createQueue()]).then(app.listen(3030)))
 
 export { app }
