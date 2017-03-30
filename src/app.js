@@ -19,7 +19,7 @@ app.use(bodyParser())
 io.attach(app)
 
 const wesh = msg => console.log(msg)
-const size = 17
+const _size = 17
 const tsize = 64
 const maxRandom = 3
 const db = createClient()
@@ -60,9 +60,9 @@ const listenQueue = () => {
     })
 }
 
-const getPos = (x, y) => JSON.stringify({ x, y })
+const getPos = (x, y, team, player) => JSON.stringify({ x, y, team, player })
 
-const initPos = (x, y) => db.set('pos', getPos(x, y))
+const initPos = (x, y, team, player) => db.set(`pos${team}${player}`, getPos(x, y, team, player))
 
 const map = {
     generate: async ctx => {
@@ -72,6 +72,7 @@ const map = {
             return
         }
         await initMap(parseInt(value.size))
+        await db.set('size', value.size)
         ctx.body = { status: 'Map saved' }
     },
     content: async ctx => ctx.body = { map: await db.get('map') },
@@ -80,16 +81,17 @@ const map = {
 const player = {
     generate: async ctx => {
         const value = ctx.request.body
-        //TODO(carlendev) watch fo bigger than size
-        if (isNaN(value.pos.x) || isNaN(value.pos.y) || parseInt(value.pos.x) < 0 || parseInt(value.pos.y) < 0) {
+        const size = await db.get('size')
+        if (isNaN(value.pos.x) || isNaN(value.pos.y) || parseInt(value.pos.x) < 0 ||
+            parseInt(value.pos.y) < 0 || value.pos.x > size || value.pos.y > size ||
+            value.team === undefined || value.player === undefined) {
             ctx.throw('Wrong JSON Format', 400)
             return
         }
-        await initPos(value.pos.x, value.pos.y)
+        await initPos(value.pos.x, value.pos.y, value.team, value.player)
         ctx.body = { status: 'Pos saved' }
-        app._io.emit('pos', await db.get('pos'))
-    },
-    content: async ctx => ctx.body = { pos: await db.get('pos') }
+        app._io.emit('pos', await db.get(`pos${value.team}${value.player}`))
+    }
 }
 
 app.use(async (ctx, next) => {
@@ -100,7 +102,6 @@ app.use(async (ctx, next) => {
 });
 
 app.use(_.get('/api/map', map.content))
-app.use(_.get('/api/player/pos', player.content))
 
 router.put('/api/map', map.generate)
 router.put('/api/player/pos', player.generate)
@@ -111,6 +112,6 @@ app._io.on('connection', sock => {
     wesh('browser connected')
 })
 
-Promise.all([initMap(size), initPos(0, 0), createQueue(), listenQueue()]).then(app.listen(3030))
+Promise.all([initMap(_size), createQueue(), listenQueue()]).then(app.listen(3030))
 
-export { app, generateMap, generateMapObj, size }
+export { app }

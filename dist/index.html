@@ -62,10 +62,19 @@
                         const socket = io.connect('http://127.0.0.1:3030')
                         start()
                         canva.show()
-                        Game.render(map, 0, 0)
+                        //Game.render(map, 0, 0)
                         socket.on('pos', data => {
-                            const pos = JSON.parse(data)
-                            Game.render(map, pos.x, pos.y)
+                            const entity = JSON.parse(data)
+                            if (!Object.keys(players).length) {
+                                players[`${entity.team}${entity.player}`] = entity
+                                Game[`${entity.team}${entity.player}`] = Loader.getImage('player')
+                            }
+                            Object.keys(players).forEach(key => {
+                                if (key === `${entity.team}${entity.player}`) return
+                                players[`${entity.team}${entity.player}`] = entity
+                                Game[`${entity.team}${entity.player}`] = Loader.getImage('player')
+                            })
+                            Game.render(map, players)
                         });
                     })
                     .catch(err => wesh(err))

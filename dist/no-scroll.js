@@ -2,7 +2,7 @@ const getTile = (col, row, map) => map.tiles[col][row]
 
 const load = () => [Loader.loadImage('tiles', '/assets/tiles.png'), Loader.loadImage('player', '/assets/player.png')]
 
-Game.render = (map, x, y) => {
+Game.render = (map, players) => {
     //pos begin 0
     context.clearRect(0, 0, 700, 700)
     for (let c = 0; c < map.cols; c++) {
@@ -23,15 +23,17 @@ Game.render = (map, x, y) => {
             }
         }
     }
-    context.drawImage(
-        Game.tilePlayer,
-        0,
-        0,
-        map.tsize,
-        map.tsize,
-        x * map.tsize,
-        y * map.tsize,
-        map.tsize,
-        map.tsize
-    )
+    Object.keys(players).forEach(entity => {
+        context.drawImage(
+            Game[entity],
+            0,
+            0,
+            map.tsize,
+            map.tsize,
+            players[entity].x * map.tsize,
+            players[entity].y * map.tsize,
+            map.tsize,
+            map.tsize
+        )
+    })
 }

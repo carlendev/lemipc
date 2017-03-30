@@ -80,12 +80,12 @@ Keyboard.isDown = (keyCode) => {
 //
 
 const Game = {}
+const players = {}
 let map
 let context
 
 Game.init = () => {
     Game.tileAtlas = Loader.getImage('tiles')
-    Game.tilePlayer = Loader.getImage('player')
 }
 
 Game.update = (delta) => {
@@ -96,7 +96,7 @@ Game.run = () => {
 
     Promise.all(load()).then(function (loaded) {
         Game.init()
-        this.render(map)
+        this.render(map, players)
       //  window.requestAnimationFrame(Game.tick)
     }.bind(Game))
 };
