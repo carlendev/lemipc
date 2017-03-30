@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
     <script src="common.js"></script>
     <script src="no-scroll.js"></script>
     <meta charset="UTF-8">
@@ -58,8 +59,13 @@
                     .then(_ => {
                         alert.hide()
                         form.hide()
+                        const socket = io.connect('http://127.0.0.1:3030')
                         start()
                         canva.show()
+                        socket.on('pos', data => {
+                            const pos = JSON.parse(data)
+                            Game.render(map, pos.x, pos.y)
+                        });
                     })
                     .catch(err => wesh(err))
             })

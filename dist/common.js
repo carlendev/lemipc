@@ -97,7 +97,7 @@ Game.run = () => {
     Promise.all(load()).then(function (loaded) {
         Game.init()
         this.render(map)
-        window.requestAnimationFrame(Game.tick)
+      //  window.requestAnimationFrame(Game.tick)
     }.bind(Game))
 };
 

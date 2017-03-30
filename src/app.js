@@ -87,6 +87,7 @@ const player = {
         }
         await initPos(value.pos.x, value.pos.y)
         ctx.body = { status: 'Pos saved' }
+        app._io.emit('pos', await db.get('pos'))
     },
     content: async ctx => ctx.body = { pos: await db.get('pos') }
 }
@@ -105,6 +106,10 @@ router.put('/api/map', map.generate)
 router.put('/api/player/pos', player.generate)
 
 app.use(router.middleware())
+
+app._io.on('connection', sock => {
+    wesh('browser connected')
+})
 
 Promise.all([initMap(size), initPos(0, 0), createQueue(), listenQueue()]).then(app.listen(3030))
 
