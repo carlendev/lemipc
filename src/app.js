@@ -19,7 +19,6 @@ app.use(bodyParser())
 io.attach(app)
 
 const wesh = msg => console.log(msg)
-const _size = 17
 const tsize = 64
 const maxRandom = 3
 const db = createClient()
@@ -52,7 +51,6 @@ const createQueue = () => {
         if (resp == 1) wesh('queue created')
     })
 }
-
 /*
 const listenQueue = () => {
     rsmq.receiveMessage({ qname: 'lemipc' }, (err, resp) => {
@@ -61,7 +59,6 @@ const listenQueue = () => {
     })
 }
 */
-
 const getPos = (x, y, team, player) => JSON.stringify({ x, y, team, player })
 
 const initPos = (x, y, team, player) => db.set(`pos${team}${player}`, getPos(x, y, team, player))
@@ -91,6 +88,9 @@ const player = {
             ctx.throw('Wrong JSON Format', 400)
             return
         }
+        const pos = await db.send('keys', ['pos*'])
+        //TODO(carlendev) list throw all key get value and check same pos
+        wesh(pos)
         await initPos(value.pos.x, value.pos.y, value.team, value.player)
         ctx.body = { status: 'Pos saved' }
         app._io.emit('pos', await db.get(`pos${value.team}${value.player}`))
@@ -115,6 +115,6 @@ app._io.on('connection', sock => {
     wesh('browser connected')
 })
 
-Promise.all([db.send('FLUSHALL', [])]).then(() => Promise.all([initMap(_size), createQueue()]).then(app.listen(3030)))
+Promise.all([db.send('FLUSHALL', []), createQueue()]).then(app.listen(3030))
 
 export { app }
