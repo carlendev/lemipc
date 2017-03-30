@@ -57,6 +57,10 @@ const listenQueue = () => {
     })
 }
 
+const getPos = (x, y) => JSON.stringify({ x, y })
+
+const initPos = (x, y) => db.set('pos', getPos(x, y))
+
 const map = {
     generate: async ctx => {
         const value = ctx.request.body
@@ -70,6 +74,20 @@ const map = {
     content: async ctx => ctx.body = { map: await db.get('map') },
 }
 
+const player = {
+    generate: async ctx => {
+        const value = ctx.request.body
+        //TODO(carlendev) watch fo bigger than size
+        if (isNaN(value.pos.x) || isNaN(value.pos.y) || parseInt(value.pos.x) < 0 || parseInt(value.pos.y) < 0) {
+            ctx.throw('Wrong JSON Format', 400)
+            return
+        }
+        await initPos(value.pos.x, value.pos.y)
+        ctx.body = { status: 'Pos saved' }
+    },
+    content: async ctx => ctx.body = { pos: await db.get('pos') }
+}
+
 app.use(async (ctx, next) => {
     const start = new Date()
     await next()
@@ -78,11 +96,13 @@ app.use(async (ctx, next) => {
 });
 
 app.use(_.get('/api/map', map.content))
+app.use(_.get('/api/player/pos', player.content))
 
 router.put('/api/map', map.generate)
+router.put('/api/player/pos', player.generate)
 
 app.use(router.middleware())
 
-Promise.all([initMap(size), createQueue(), listenQueue()]).then(app.listen(3030))
+Promise.all([initMap(size), initPos(0, 0), createQueue(), listenQueue()]).then(app.listen(3030))
 
 export { app, generateMap, generateMapObj, size }
