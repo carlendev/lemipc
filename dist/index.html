@@ -62,6 +62,7 @@
                         const socket = io.connect('http://127.0.0.1:3030')
                         start()
                         canva.show()
+                        Game.render(map, 0, 0)
                         socket.on('pos', data => {
                             const pos = JSON.parse(data)
                             Game.render(map, pos.x, pos.y)
