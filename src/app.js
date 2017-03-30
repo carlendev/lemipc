@@ -17,7 +17,7 @@ app.use(bodyParser())
 
 const wesh = msg => console.log(msg)
 const size = 17
-const tsize = 32
+const tsize = 64
 const maxRandom = 3
 const db = createClient()
 const rsmq = new RedisMQ({ host: "127.0.0.1", port: 6379, ns: "rsmq" })
