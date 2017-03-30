@@ -1,4 +1,4 @@
-const getTile = (col, row, map) => map.tiles[col][row];
+const getTile = (col, row, map) => map.tiles[col][row]
 
 const load = () => [Loader.loadImage('tiles', '/assets/tiles.png'), Loader.loadImage('player', '/assets/player.png')]
 
@@ -21,4 +21,5 @@ Game.render = (map) => {
             }
         }
     }
+    context.drawImage(Game.tilePlayer, 0, 0, map.tsize, map.tsize, 0, 0, map.tsize, map.tsize)
 }

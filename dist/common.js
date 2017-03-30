@@ -129,7 +129,7 @@ const start = () => {
             context = document.getElementById('demo').getContext('2d')
             Game.run()
         })
-        .catch((error) => {
-            wesh(error)
+        .catch(err => {
+            wesh(err)
         });
 };
