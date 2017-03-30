@@ -49,18 +49,23 @@
             alert.hide()
             $('#submitButton').click(e => {
                 e.preventDefault()
-                const val = size.val()
-                if (isNaN(val) || parseInt(val) < 5) {
+                const sizeNb = size.val()
+                if (isNaN(sizeNb) || parseInt(sizeNb) < 5) {
                     alert.show()
                     return
                 }
-                alert.hide()
-                form.hide()
-                //make request
-                canva.show()
-                start()
-            });
-        });
+                axios.put('http://127.0.0.1:3030/api/map', { size: sizeNb })
+                    .then(_ => {
+                        alert.hide()
+                        form.hide()
+                        start()
+                        canva.show()
+                    })
+                    .catch(err => {
+                        wesh(err)
+                    })
+            })
+        })
     </script>
     </body>
 </html>
