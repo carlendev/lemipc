@@ -5,7 +5,6 @@ import Koa from 'koa'
 import _ from 'koa-route'
 import Router from 'koa-trie-router'
 import cors from 'koa2-cors'
-import RedisMQ from 'rsmq'
 import bodyParser from 'koa-bodyparser'
 import IO from 'koa-socket'
 import { createClient } from 'then-redis'
@@ -22,7 +21,6 @@ const wesh = msg => console.log(msg)
 const tsize = 64
 const maxRandom = 3
 const db = createClient()
-const rsmq = new RedisMQ({ host: "127.0.0.1", port: 6379, ns: "rsmq" })
 
 const fill = (nb, value) => Array(nb).fill(value)
 
@@ -46,19 +44,6 @@ const generateMapObj = (size, map) => {
 
 const initMap = size => db.set('map', generateMapObj(size, generateMap(size)))
 
-const createQueue = () => {
-    rsmq.createQueue({ qname: 'lemipc' }, (err, resp) => {
-        if (resp == 1) wesh('queue created')
-    })
-}
-/*
-const listenQueue = () => {
-    rsmq.receiveMessage({ qname: 'lemipc' }, (err, resp) => {
-        if (resp.id) wesh('Message received.', resp)
-        else wesh('No messages for me...')
-    })
-}
-*/
 const getPos = (x, y, team, player) => JSON.stringify({ x, y, team, player })
 
 const initPos = (x, y, team, player) => db.set(`pos${team}${player}`, getPos(x, y, team, player))
@@ -126,6 +111,6 @@ app._io.on('connection', sock => {
     wesh('browser connected')
 })
 
-Promise.all([db.send('FLUSHALL', []), createQueue()]).then(app.listen(3030))
+Promise.all([db.send('FLUSHALL', [])]).then(app.listen(3030))
 
 export { app }
