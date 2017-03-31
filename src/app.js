@@ -136,6 +136,11 @@ app._io.on('connection', socket => {
     })
 })
 
-Promise.all([db.send('FLUSHALL', [])]).then(app.listen(3030))
+Promise.all([db.send('FLUSHALL', [])]).then(() => {
+    setInterval(() => {
+        wesh('Action Begin')
+    }, 1000)
+    app.listen(3030)
+})
 
 export { app }
