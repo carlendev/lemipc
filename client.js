@@ -5,6 +5,7 @@ const createClient = require('then-redis').createClient
 const socket = require('socket.io-client')
 
 const wesh = msg => console.log(msg)
+const getRandom = max => Math.floor(Math.random() * max) + 1
 
 let live = false
 const player = {}
@@ -35,16 +36,14 @@ const main = argv => {
     io.on('pos', async (data) => {
         wesh('pos')
         const players = JSON.parse(await db.get('players'))
-        const pos = {
-            x: 0,
-            y: 0
-        }
+        const size = parseInt(await db.get('size')) - 1
+        const x = getRandom(size)
+        const y = getRandom(size)
+        const pos = { x, y }
         players[`${player.team}${player.id}`].pos = pos
         wesh(players[`${player.team}${player.id}`])
         await db.set('players', JSON.stringify(players))
         io.emit('pos')
-        //live = true
-        //wesh(`Begin to live ${data.team}${data.id}`)
     })
 
     io.on('disconnect', () => {

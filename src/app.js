@@ -147,6 +147,12 @@ app._io.on('connection', socket => {
 Promise.all([db.send('FLUSHALL', [])]).then(async () => {
     await db.set('order', -1)
     setInterval(async () => {
+        const size = await db.get('size')
+        wesh(size)
+        if (size == null || size == undefined) {
+            wesh('map not set')
+            return
+        }
         wesh('Action Begin')
         const teamsDB = await db.send('smembers', [ teams ])
         if (!teamsDB.length) {
@@ -166,7 +172,7 @@ Promise.all([db.send('FLUSHALL', [])]).then(async () => {
         for (let i = 0; i < socketClient.length; ++i) socketClient[i].emit('pos', await db.get('players'))
         //TODO(carlendev) incr current
         //TODO(carlendev) check how to incr current
-    }, 1500)
+    }, 1000)
     app.listen(3030)
 })
 
