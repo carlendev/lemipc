@@ -128,15 +128,14 @@ app._io.on('connection', socket => {
 
     socket.on('disconnect', async () => {
         const index = clientsId.indexOf(socket)
-        if (index !== -1) {
-            let key = false
-            const keys = Object.keys(clients)
-            for (let i = 0; i < keys.length; ++i) if (clients[keys[i]].socketId === socket.id) key = keys[i]
-            if (key !== false) delete clients[key]
-            clientsId.splice(index, 1)
-            await db.set('players', JSON.stringify(clients))
-            wesh(`Client gone (id=${socket.id})`)
-        }
+        if (index === -1) return
+        let key = false
+        const keys = Object.keys(clients)
+        for (let i = 0; i < keys.length; ++i) if (clients[keys[i]].socketId === socket.id) key = keys[i]
+        if (key !== false) delete clients[key]
+        clientsId.splice(index, 1)
+        await db.set('players', JSON.stringify(clients))
+        wesh(`Client gone (id=${socket.id})`)
     })
 })
 
