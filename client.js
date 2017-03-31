@@ -34,7 +34,7 @@ const main = argv => {
 
     io.on('disconnect', () => {
         live = false
-        wesh(`I am out`)
+        wesh('I\'m out')
         process.exit(0)
     })
 }

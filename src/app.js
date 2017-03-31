@@ -20,6 +20,7 @@ io.attach(app)
 const wesh = msg => console.log(msg)
 const tsize = 64
 const maxRandom = 3
+const teams = 'teams'
 const clientsId = []
 const clients = {}
 const db = createClient()
@@ -91,7 +92,6 @@ const player = {
         }
         await initPos(value.pos.x, value.pos.y, value.team, value.player)
         ctx.body = { status: 'Pos saved' }
-        app._io.emit('pos', await db.get(`pos${value.team}${value.player}`))
     }
 }
 
@@ -110,35 +110,51 @@ router.put('/api/player/pos', player.generate)
 app.use(router.middleware())
 
 app._io.on('connection', socket => {
-    wesh(`New client connected (id=${socket.id}).`)
-    clientsId.push(socket.id)
+    wesh(`New client connected (id=${socket.id})`)
+    clientsId.push(socket)
+
     socket.on('addTeam', async (data) => {
-        clients[`${data.team}${data.id}`] = {
+        const client = clients[`${data.team}${data.id}`] = {
             team: data.team,
             id: data.id,
             socketId: socket.id,
             pos: {}
         }
         await db.set('players', JSON.stringify(clients))
+        await db.send('sadd', [ teams, data.team ])
         wesh(`Client ${data.team}${data.id} added`)
+        socket.emit('beginLive', client)
     })
+
     socket.on('disconnect', async () => {
-        const index = clientsId.indexOf(socket.id)
+        const index = clientsId.indexOf(socket)
         if (index !== -1) {
             let key = false
             const keys = Object.keys(clients)
-            for (let i = 0; i < keys.length; ++i) if (clients[keys[i]].socketId == socket.id) key = keys[i]
-            if (key != false) delete clients[key]
+            for (let i = 0; i < keys.length; ++i) if (clients[keys[i]].socketId === socket.id) key = keys[i]
+            if (key !== false) delete clients[key]
             clientsId.splice(index, 1)
             await db.set('players', JSON.stringify(clients))
-            wesh(`Client gone (id=${socket.id}).`)
+            wesh(`Client gone (id=${socket.id})`)
         }
     })
 })
 
-Promise.all([db.send('FLUSHALL', [])]).then(() => {
-    setInterval(() => {
+Promise.all([db.send('FLUSHALL', [])]).then(async () => {
+    await db.set('order', -1)
+    setInterval(async () => {
         wesh('Action Begin')
+        const teamsDB = await db.send('smembers', [ teams ])
+        if (!teamsDB.length) {
+            wesh('No teams avialable')
+            return
+        }
+        const current = parseInt(await db.get('order'))
+        if (current === -1) {
+            await db.set('order', teamsDB[0])
+            //TODO(carlendev) emit on right team all player with same id team
+        }
+        app._io.emit('players', await db.get('players'))
     }, 1000)
     app.listen(3030)
 })
