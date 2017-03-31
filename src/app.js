@@ -81,7 +81,7 @@ const posTaken = async (posDB, value) => {
     let taken = false
     for (let i = 0; i < posDB.length; ++i) {
         const pos = JSON.parse(await db.get(posDB[i]))
-        if (pos.x == value.pos.x && pos.y == value.pos.y) taken = true
+        if (pos.x === value.pos.x && pos.y === value.pos.y) taken = true
     }
     return taken
 }
