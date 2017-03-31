@@ -116,7 +116,8 @@ app._io.on('connection', socket => {
         clients[`${data.team}${data.id}`] = {
             team: data.team,
             id: data.id,
-            socketId: socket.id
+            socketId: socket.id,
+            pos: {}
         }
         await db.set('players', JSON.stringify(clients))
         wesh(`Client ${data.team}${data.id} added`)
