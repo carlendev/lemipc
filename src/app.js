@@ -127,18 +127,9 @@ app._io.on('connection', socket => {
     })
 
     socket.on('pos', async (data) => {
-        /*const client = clients[`${data.team}${data.id}`] = {
-            team: data.team,
-            id: data.id,
-            socketId: socket.id,
-            pos: {}
-        }
-        await db.set('players', JSON.stringify(clients))
-        await db.send('sadd', [ teams, data.team ])
-        wesh(`Client ${data.team}${data.id} added`)
-        socket.emit('beginLive', client)*/
+        wesh('recieve pos')
+        app._io.emit('players', await db.get('players'))
     })
-
 
     socket.on('disconnect', async () => {
         const index = clientsId.indexOf(socket)
@@ -170,13 +161,11 @@ Promise.all([db.send('FLUSHALL', [])]).then(async () => {
         const teamPlayerID = []
         for (let i = 0; i < keys.length; ++i) if (clientsDB[keys[i]].team == current) teamPlayerID.push(keys[i])
         const socketClient = []
-        for (let i = 0; i < teamPlayerID.length; ++i) {
-            for (let j = 0; j < clientsId.length; ++j)
-                if (clientsDB[teamPlayerID[i]].socketId == clientsId[j].id) socketClient.push(clientsId[j])
-        }
+        for (let i = 0; i < teamPlayerID.length; ++i) for (let j = 0; j < clientsId.length; ++j)
+            if (clientsDB[teamPlayerID[i]].socketId == clientsId[j].id) socketClient.push(clientsId[j])
         for (let i = 0; i < socketClient.length; ++i) socketClient[i].emit('pos', await db.get('players'))
         //TODO(carlendev) incr current
-        app._io.emit('players', await db.get('players'))
+        //TODO(carlendev) check how to incr current
     }, 1500)
     app.listen(3030)
 })

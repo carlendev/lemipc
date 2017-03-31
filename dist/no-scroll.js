@@ -25,13 +25,13 @@ Game.render = (map, players) => {
     }
     Object.keys(players).forEach(entity => {
         context.drawImage(
-            Game[entity],
+            Game.player,
             0,
             0,
             map.tsize,
             map.tsize,
-            players[entity].x * map.tsize,
-            players[entity].y * map.tsize,
+            players[entity].pos.x * map.tsize,
+            players[entity].pos.y * map.tsize,
             map.tsize,
             map.tsize
         )

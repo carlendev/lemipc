@@ -80,12 +80,13 @@ Keyboard.isDown = (keyCode) => {
 //
 
 const Game = {}
-const players = {}
+let players = {}
 let map
 let context
 
 Game.init = () => {
     Game.tileAtlas = Loader.getImage('tiles')
+    Game.player = Loader.getImage('player')
 }
 
 Game.update = (delta) => {

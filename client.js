@@ -32,8 +32,17 @@ const main = argv => {
         wesh(`Begin to live ${data.team}${data.id}`)
     })
 
-    io.on('pos', (data) => {
+    io.on('pos', async (data) => {
         wesh('pos')
+        const players = JSON.parse(await db.get('players'))
+        const pos = {
+            x: 0,
+            y: 0
+        }
+        players[`${player.team}${player.id}`].pos = pos
+        wesh(players[`${player.team}${player.id}`])
+        await db.set('players', JSON.stringify(players))
+        io.emit('pos')
         //live = true
         //wesh(`Begin to live ${data.team}${data.id}`)
     })
