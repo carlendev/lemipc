@@ -32,6 +32,12 @@ const main = argv => {
         wesh(`Begin to live ${data.team}${data.id}`)
     })
 
+    io.on('pos', (data) => {
+        wesh('pos')
+        //live = true
+        //wesh(`Begin to live ${data.team}${data.id}`)
+    })
+
     io.on('disconnect', () => {
         live = false
         wesh('I\'m out')

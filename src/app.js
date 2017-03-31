@@ -126,6 +126,20 @@ app._io.on('connection', socket => {
         socket.emit('beginLive', client)
     })
 
+    socket.on('pos', async (data) => {
+        /*const client = clients[`${data.team}${data.id}`] = {
+            team: data.team,
+            id: data.id,
+            socketId: socket.id,
+            pos: {}
+        }
+        await db.set('players', JSON.stringify(clients))
+        await db.send('sadd', [ teams, data.team ])
+        wesh(`Client ${data.team}${data.id} added`)
+        socket.emit('beginLive', client)*/
+    })
+
+
     socket.on('disconnect', async () => {
         const index = clientsId.indexOf(socket)
         if (index === -1) return
@@ -145,16 +159,25 @@ Promise.all([db.send('FLUSHALL', [])]).then(async () => {
         wesh('Action Begin')
         const teamsDB = await db.send('smembers', [ teams ])
         if (!teamsDB.length) {
-            wesh('No teams avialable')
+            wesh('No teams available')
             return
         }
-        const current = parseInt(await db.get('order'))
-        if (current === -1) {
-            await db.set('order', teamsDB[0])
-            //TODO(carlendev) emit on right team all player with same id team
+        let current = parseInt(await db.get('order'))
+        if (current === -1) await db.set('order', teamsDB[0])
+        current = parseInt(await db.get('order'))
+        const clientsDB = JSON.parse(await db.get('players'))
+        const keys = Object.keys(clientsDB)
+        const teamPlayerID = []
+        for (let i = 0; i < keys.length; ++i) if (clientsDB[keys[i]].team == current) teamPlayerID.push(keys[i])
+        const socketClient = []
+        for (let i = 0; i < teamPlayerID.length; ++i) {
+            for (let j = 0; j < clientsId.length; ++j)
+                if (clientsDB[teamPlayerID[i]].socketId == clientsId[j].id) socketClient.push(clientsId[j])
         }
+        for (let i = 0; i < socketClient.length; ++i) socketClient[i].emit('pos', await db.get('players'))
+        //TODO(carlendev) incr current
         app._io.emit('players', await db.get('players'))
-    }, 1000)
+    }, 1500)
     app.listen(3030)
 })
 
