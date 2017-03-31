@@ -122,10 +122,15 @@ app._io.on('connection', socket => {
         await db.set('players', JSON.stringify(clients))
         wesh(`Client ${data.team}${data.id} added`)
     })
-    socket.on('disconnect', () => {
-        const index = clientsId.indexOf(socket)
+    socket.on('disconnect', async () => {
+        const index = clientsId.indexOf(socket.id)
         if (index !== -1) {
+            let key = false
+            const keys = Object.keys(clients)
+            for (let i = 0; i < keys.length; ++i) if (clients[keys[i]].socketId == socket.id) key = keys[i]
+            if (key != false) delete clients[key]
             clientsId.splice(index, 1)
+            await db.set('players', JSON.stringify(clients))
             wesh(`Client gone (id=${socket.id}).`)
         }
     })
