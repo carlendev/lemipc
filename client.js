@@ -1,12 +1,14 @@
 /**
  * Created by carlen on 3/24/17.
  */
+const createClient = require('then-redis').createClient
 const socket = require('socket.io-client')
 
 const wesh = msg => console.log(msg)
 
 let live = false
 const player = {}
+const db = createClient()
 
 const weshOut = () => {
     wesh('Usage ./client.js team id')
@@ -14,7 +16,7 @@ const weshOut = () => {
 }
 
 const main = argv => {
-    if (argv.length != 4) weshOut()
+    if (argv.length !== 4) weshOut()
     const [ team, id ] = argv.filter(entity => !isNaN(entity)).filter(entity => entity > 0)
     if (team === undefined || id === undefined) weshOut()
     player.team = team
