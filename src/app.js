@@ -77,7 +77,15 @@ const map = {
     content: async ctx => ctx.body = { map: await db.get('map') },
 }
 
-//TODO(carlendev) check same pos
+const posTaken = async (posDB, value) => {
+    let taken = false
+    for (let i = 0; i < posDB.length; ++i) {
+        const pos = JSON.parse(await db.get(posDB[i]))
+        if (pos.x == value.pos.x && pos.y == value.pos.y) taken = true
+    }
+    return taken
+}
+
 const player = {
     generate: async ctx => {
         const value = ctx.request.body
@@ -89,8 +97,11 @@ const player = {
             return
         }
         const pos = await db.send('keys', ['pos*'])
-        //TODO(carlendev) list throw all key get value and check same pos
-        wesh(pos)
+        const taken = await posTaken(pos, value)
+        if (taken) {
+            ctx.body = { status: 'Pos already taken' }
+            return
+        }
         await initPos(value.pos.x, value.pos.y, value.team, value.player)
         ctx.body = { status: 'Pos saved' }
         app._io.emit('pos', await db.get(`pos${value.team}${value.player}`))
