@@ -20,6 +20,8 @@ io.attach(app)
 const wesh = msg => console.log(msg)
 const tsize = 64
 const maxRandom = 3
+const clientsId = []
+const clients = {}
 const db = createClient()
 
 const fill = (nb, value) => Array(nb).fill(value)
@@ -107,8 +109,25 @@ router.put('/api/player/pos', player.generate)
 
 app.use(router.middleware())
 
-app._io.on('connection', sock => {
-    wesh('browser connected')
+app._io.on('connection', socket => {
+    wesh(`New client connected (id=${socket.id}).`)
+    clientsId.push(socket.id)
+    socket.on('addTeam', async (data) => {
+        clients[`${data.team}${data.id}`] = {
+            team: data.team,
+            id: data.id,
+            socketId: socket.id
+        }
+        await db.set('players', JSON.stringify(clients))
+        wesh(`Client ${data.team}${data.id} added`)
+    })
+    socket.on('disconnect', () => {
+        const index = clientsId.indexOf(socket)
+        if (index !== -1) {
+            clientsId.splice(index, 1)
+            wesh(`Client gone (id=${socket.id}).`)
+        }
+    })
 })
 
 Promise.all([db.send('FLUSHALL', [])]).then(app.listen(3030))
