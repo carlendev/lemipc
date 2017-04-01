@@ -40,6 +40,10 @@
             Developed by Yann Carlen and Quentin Muller
         </div>
     <script>
+        const idDead = (players, playersCpy) => {
+
+        }
+
         $(document).ready(() => {
             const canva = $('#demo')
             const size = $('#sizeInput')
@@ -63,6 +67,10 @@
                         start()
                         canva.show()
                         socket.on('players', data => {
+                            if (players !== null) {
+                                if (playersCpy === null) playersCpy = JSON.parse(JSON.stringify(players))
+                                else idDead()
+                            }
                             players = JSON.parse(data)
                             const keys = Object.keys(players)
                             const len = keys.length
