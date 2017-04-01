@@ -122,6 +122,7 @@ app._io.on('connection', socket => {
         const client = clients[`${data.team}${data.id}`] = {
             team: data.team,
             id: data.id,
+            imgId: data.imgId,
             socketId: socket.id,
             pos: {}
         }

@@ -17,16 +17,47 @@ const weshOut = () => {
     process.exit(0)
 }
 
-const main = argv => {
+const main = async argv => {
     if (argv.length !== 4) weshOut()
     const [ team, id ] = argv.filter(entity => !isNaN(entity)).filter(entity => entity > 0)
     if (team === undefined || id === undefined) weshOut()
     player.team = team
     player.id = id
+    let players = await db.get('players')
+    if (players === null || players === undefined) {
+        player.imgId = 1
+    } else {
+        players = JSON.parse(players)
+        const keys = Object.keys(players)
+        const len = keys.length
+        wesh(players)
+        for (let i = 0; i < len; ++i) {
+            if (players[keys[i]].team == player.team && players[keys[i]].id == player.id) {
+                wesh('Player id already taken !')
+                weshOut()
+            }
+        }
+        let is = false
+        for (let i = 0; i < len; ++i) {
+            if (player.team == players[keys[i]].team) {
+                player.imgId = players[keys[i]].imgId
+                is = true
+            }
+        }
+        if (!is) {
+            wesh('new team')
+            let teams = []
+            for (let i = 0; i < len; ++i)
+                if (teams.indexOf(players[keys[i]].team) === -1) teams.push(players[keys[i]].team)
+            const nbTeams = teams.length
+            if (nbTeams > 2) players.imgId = 1
+            else player.imgId = nbTeams + 1
+        }
+    }
     const io = socket.connect('http://127.0.0.1:3030')
 
     io.on('connect', () => {
-        io.emit('addTeam', { team: player.team, id: player.id })
+        io.emit('addTeam', { team: player.team, id: player.id, imgId: player.imgId})
     })
 
     io.on('beginLive', (data) => {
