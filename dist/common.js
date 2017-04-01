@@ -31,51 +31,6 @@ Loader.getImage = function (key) {
 }
 
 //
-// Keyboard handler
-//
-
-const Keyboard = {}
-
-Keyboard.LEFT = 37
-Keyboard.RIGHT = 39
-Keyboard.UP = 38
-Keyboard.DOWN = 40
-
-Keyboard._keys = {}
-
-Keyboard.listenForEvents = (keys) => {
-    window.addEventListener('keydown', Keyboard._onKeyDown.bind(Keyboard))
-    window.addEventListener('keyup', Keyboard._onKeyUp.bind(Keyboard))
-
-    keys.forEach(function (key) {
-        Keyboard._keys[key] = false
-    }.bind(Keyboard))
-}
-
-Keyboard._onKeyDown = (event) => {
-    var keyCode = event.keyCode
-    if (keyCode in Keyboard._keys) {
-        event.preventDefault()
-        Keyboard._keys[keyCode] = true
-    }
-}
-
-Keyboard._onKeyUp = (event) => {
-    var keyCode = event.keyCode
-    if (keyCode in Keyboard._keys) {
-        event.preventDefault()
-        Keyboard._keys[keyCode] = false
-    }
-}
-
-Keyboard.isDown = (keyCode) => {
-    if (!keyCode in Keyboard._keys) {
-        throw new Error('Keycode ' + keyCode + ' is not being listened to')
-    }
-    return Keyboard._keys[keyCode]
-}
-
-//
 // Game object
 //
 
@@ -87,6 +42,8 @@ let context
 Game.init = () => {
     Game.tileAtlas = Loader.getImage('tiles')
     Game.player = Loader.getImage('player')
+    Game.player1 = Loader.getImage('player1')
+    Game.player2 = Loader.getImage('player2')
 }
 
 Game.update = (delta) => {

@@ -109,6 +109,11 @@ router.put('/api/player/pos', player.generate)
 
 app.use(router.middleware())
 
+app._io.on('dead', data => {
+    wesh('dead')
+    wesh(data)
+})
+
 app._io.on('connection', socket => {
     wesh(`New client connected (id=${socket.id})`)
     clientsId.push(socket)

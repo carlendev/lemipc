@@ -1,8 +1,9 @@
 const getTile = (col, row, map) => map.tiles[col][row]
 
-const load = () => [Loader.loadImage('tiles', '/assets/tiles.png'), Loader.loadImage('player', '/assets/Soldat.png')]
+const load = () => [Loader.loadImage('tiles', '/assets/tiles.png'), Loader.loadImage('player', '/assets/Soldat.png'),
+    Loader.loadImage('player1', '/assets/Chief_1.png'), Loader.loadImage('player2', '/assets/Chief_2.png')]
 
-Game.render = (map, players) => {
+Game.render = (map, players, teamImg) => {
     //pos begin 0
     context.clearRect(0, 0, 700, 700)
     for (let c = 0; c < map.cols; c++) {
@@ -24,8 +25,9 @@ Game.render = (map, players) => {
         }
     }
     Object.keys(players).forEach(entity => {
+        const img = teamImg[players[entity].team]
         context.drawImage(
-            Game.player,
+            img,
             0,
             0,
             map.tsize,
