@@ -112,6 +112,7 @@ app.use(router.middleware())
 app._io.on('dead', data => {
     wesh('dead')
     wesh(data)
+    //TODO(receive the socket id of the dead socket and send it dead signal then remove change status or remove it from json)
 })
 
 app._io.on('connection', socket => {

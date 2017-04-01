@@ -108,6 +108,12 @@ const main = async argv => {
         io.emit('pos')
     })
 
+    io.on('dead', () => {
+        live = false
+        wesh('I\' dead')
+        process.exit(0)
+    })
+
     io.on('disconnect', () => {
         live = false
         wesh('I\'m out')
