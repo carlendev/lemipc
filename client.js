@@ -49,32 +49,24 @@ const main = argv => {
             const mine = players[`${player.team}${player.id}`]
             x = mine.pos.x
             y = mine.pos.y
-            if (x + 1 == size && y + 1 == size) --x
-            else if (x + 1 == size) {
+            if (x == size && y  == size) --x
+            else if (x == size) {
                 --x
-                if (getRandom(2) == 1) ++y
-                else --y
-            }
-            else if (y + 1 == size) {
-                if (getRandom(2) == 1) ++x
-                else --x
-            }
-            else if (x - 1 == 0 && y - 1 == 0) ++x
-            else if (x - 1 == 0) {
-                ++x
-                if (getRandom(2) == 1) ++y
-                else --y
-            }
-            else if (y - 1 == 0) {
                 ++y
-                if (getRandom(2) == 1) --x
-                else ++x
+            }
+            else if (y == size) --y
+            else if (x == 0 && y - 1 == 0) ++x
+            else if (x == 0) {
+                ++x
+                --y
+            }
+            else if (y - 1 === 0) {
+                ++y
+                ++x
             }
             else {
-                if (getRandom(2) == 1) --y
-                else ++y
-                if (getRandom(2) == 1) --x
-                else ++x
+                ++y
+                ++x
             }
         }
         wesh(`${x} ${y}`)
