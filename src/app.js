@@ -125,7 +125,11 @@ app._io.on('connection', socket => {
             socketId: socket.id,
             pos: {}
         }
-        await db.set('players', JSON.stringify(clients))
+        let players = await db.get('players')
+        if (players === null || players === undefined) players = {}
+        else players = JSON.parse(players)
+        players[`${data.team}${data.id}`] = client
+        await db.set('players', JSON.stringify(players))
         await db.send('sadd', [ teams, data.team ])
         wesh(`Client ${data.team}${data.id} added`)
         socket.emit('beginLive', client)
