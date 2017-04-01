@@ -49,14 +49,14 @@ const main = argv => {
             const mine = players[`${player.team}${player.id}`]
             x = mine.pos.x
             y = mine.pos.y
-            if (x == size && y  == size) --x
-            else if (x == size) {
+            if (x === size && y  === size) --x
+            else if (x === size) {
                 --x
                 ++y
             }
-            else if (y == size) --y
-            else if (x == 0 && y - 1 == 0) ++x
-            else if (x == 0) {
+            else if (y === size) --y
+            else if (x === 0 && y - 1 === 0) ++x
+            else if (x === 0) {
                 ++x
                 --y
             }
