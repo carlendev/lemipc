@@ -47,14 +47,52 @@
              const len = key.length
              const lenCpy = keyCpy.length
              let samePos = []
-             for (let i = 0; i < len / 2 - 1; ++i) {
-                 if (players[key[i]].team !== players[key[i + 1]].team) {
-                     if (players[key[i]].pos.x == players[key[i + 1]].pos.x &&
-                         players[key[i]].pos.y == players[key[i + 1]].pos.y)
-                         samePos.push([players[key[i]], players[key[i + 1]]])
+             wesh('loop pos')
+             for (let i = 0; i < len; ++i) {
+                 for (let j = i + 1; j < len; ++j)
+                 if (players[key[i]].team != players[key[j]].team) {
+                     if (players[key[i]].pos.x == players[key[j]].pos.x &&
+                         players[key[i]].pos.y == players[key[j]].pos.y)
+                         samePos.push([players[key[i]], players[key[j]]])
                  }
              }
-            playersCpy = cpy(players)
+             if (!samePos.length) {
+                 playersCpy = cpy(players)
+                 return
+             }
+             const lenPos = samePos.length
+             wesh('begin compare')
+             for (let i = 0; i < lenPos; ++i)  {
+                 const obj = samePos[i][0]
+                 const obj1 = samePos[i][1]
+                 let objCpy = null
+                 let obj1Cpy = null
+                 for (let i = 0; i < lenCpy; ++i) {
+                     if (obj.team == playersCpy[keyCpy[i]].team && obj.id == playersCpy[keyCpy[i]].id)
+                         objCpy = playersCpy[keyCpy[i]]
+                 }
+                 for (let i = 0; i < lenCpy; ++i) {
+                     if (obj1.team == playersCpy[keyCpy[i]].team && obj1.id == playersCpy[keyCpy[i]].id)
+                         obj1Cpy = playersCpy[keyCpy[i]]
+                 }
+                 if (objCpy == null) {
+                     wesh('ok1')
+                     socket.emit('dead', obj1)
+                 }
+                 if (obj1Cpy == null) {
+                     wesh('ok2')
+                     socket.emit('dead', obj)
+                 }
+                 if (obj.pos.x == objCpy.pos.x && obj.pos.y == objCpy.pos.y) {
+                     wesh('ok3')
+                     socket.emit('dead', obj)
+                 }
+                 if (obj1.pos.x == obj1Cpy.pos.x && obj1.pos.y == obj1Cpy.pos.y) {
+                     wesh('ok4')
+                     socket.emit('dead', obj1)
+                 }
+             }
+             playersCpy = cpy(players)
         }
 
         $(document).ready(() => {
@@ -76,15 +114,16 @@
                     .then(_ => {
                         alert.hide()
                         form.hide()
-                        const socket = io.connect('http://127.0.0.1:3030')
+                        socket = io.connect('http://127.0.0.1:3030')
                         start()
                         canva.show()
                         socket.on('players', data => {
                             if (players !== null) {
-                                if (playersCpy === null) playersCpy = cpy(player)
+                                if (playersCpy === null) playersCpy = cpy(players)
                                 else isDead()
                             }
                             players = JSON.parse(data)
+                            wesh(players)
                             const keys = Object.keys(players)
                             const len = keys.length
                             for (let i = 0; i < len; ++i) {

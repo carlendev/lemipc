@@ -37,6 +37,7 @@ Loader.getImage = function (key) {
 const Game = {}
 let players = null
 let playersCpy = null
+let socket
 let map
 let context
 
@@ -55,7 +56,7 @@ Game.run = () => {
 
     Promise.all(load()).then(function (loaded) {
         Game.init()
-        this.render(map, players)
+        this.render(map, {})
       //  window.requestAnimationFrame(Game.tick)
     }.bind(Game))
 };
