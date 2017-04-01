@@ -40,7 +40,7 @@
             Developed by Yann Carlen and Quentin Muller
         </div>
     <script>
-        const idDead = (players, playersCpy) => {
+        const isDead = (players, playersCpy) => {
 
         }
 
@@ -69,7 +69,7 @@
                         socket.on('players', data => {
                             if (players !== null) {
                                 if (playersCpy === null) playersCpy = JSON.parse(JSON.stringify(players))
-                                else idDead()
+                                else isDead()
                             }
                             players = JSON.parse(data)
                             const keys = Object.keys(players)
