@@ -40,8 +40,21 @@
             Developed by Yann Carlen and Quentin Muller
         </div>
     <script>
-        const isDead = (players, playersCpy) => {
-
+        const cpy = obj => JSON.parse(JSON.stringify(obj))
+         const isDead = () => {
+             const key = Object.keys(players)
+             const keyCpy = Object.keys(playersCpy)
+             const len = key.length
+             const lenCpy = keyCpy.length
+             let samePos = []
+             for (let i = 0; i < len / 2 - 1; ++i) {
+                 if (players[key[i]].team !== players[key[i + 1]].team) {
+                     if (players[key[i]].pos.x == players[key[i + 1]].pos.x &&
+                         players[key[i]].pos.y == players[key[i + 1]].pos.y)
+                         samePos.push([players[key[i]], players[key[i + 1]]])
+                 }
+             }
+            playersCpy = cpy(players)
         }
 
         $(document).ready(() => {
@@ -68,7 +81,7 @@
                         canva.show()
                         socket.on('players', data => {
                             if (players !== null) {
-                                if (playersCpy === null) playersCpy = JSON.parse(JSON.stringify(players))
+                                if (playersCpy === null) playersCpy = cpy(player)
                                 else isDead()
                             }
                             players = JSON.parse(data)
