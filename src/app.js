@@ -148,8 +148,7 @@ Promise.all([db.send('FLUSHALL', [])]).then(async () => {
     await db.set('order', -1)
     setInterval(async () => {
         const size = await db.get('size')
-        wesh(size)
-        if (size == null || size == undefined) {
+        if (size === null || size === undefined) {
             wesh('map not set')
             return
         }
@@ -169,9 +168,14 @@ Promise.all([db.send('FLUSHALL', [])]).then(async () => {
         const socketClient = []
         for (let i = 0; i < teamPlayerID.length; ++i) for (let j = 0; j < clientsId.length; ++j)
             if (clientsDB[teamPlayerID[i]].socketId == clientsId[j].id) socketClient.push(clientsId[j])
-        for (let i = 0; i < socketClient.length; ++i) socketClient[i].emit('pos', await db.get('players'))
-        //TODO(carlendev) incr current
-        //TODO(carlendev) check how to incr current
+        for (let i = 0; i < socketClient.length; ++i) await socketClient[i].emit('pos', await db.get('players'))
+        if (teamsDB.length === 1) return
+        const currentIndex = teamsDB.indexOf(current.toString())
+        let futurIndex
+        if (currentIndex === teamsDB.length - 1) futurIndex = 0
+        else futurIndex = currentIndex + 1
+        wesh('change order')
+        await db.set('order', teamsDB[futurIndex])
     }, 1000)
     app.listen(3030)
 })
