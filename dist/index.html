@@ -82,19 +82,19 @@
                  let deadObj = null
                  if (objCpy == null) {
                      deadObj = obj1
-                     socket.emit('dead', obj1)
+                     socket.emit('dead', JSON.stringify(obj1))
                  }
-                 if (obj1Cpy == null) {
+                 else if (obj1Cpy == null) {
                      deadObj = obj
-                     socket.emit('dead', obj)
+                     socket.emit('dead', JSON.stringify(obj))
                  }
-                 if (obj.pos.x == objCpy.pos.x && obj.pos.y == objCpy.pos.y) {
+                 else if (obj.pos.x == objCpy.pos.x && obj.pos.y == objCpy.pos.y) {
                      deadObj = obj
-                     socket.emit('dead', obj)
+                     socket.emit('dead', JSON.stringify(obj))
                  }
-                 if (obj1.pos.x == obj1Cpy.pos.x && obj1.pos.y == obj1Cpy.pos.y) {
+                 else if (obj1.pos.x == obj1Cpy.pos.x && obj1.pos.y == obj1Cpy.pos.y) {
                      deadObj = obj1
-                     socket.emit('dead', obj1)
+                     socket.emit('dead', JSON.stringify(obj1))
                  }
                  if (deadObj !== null) {
                      const str = `Player from ${deadObj.team} with id ${deadObj.id} is dead`

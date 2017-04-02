@@ -11,6 +11,8 @@ let live = false
 const player = {}
 const db = createClient()
 let first = true
+let xprev = null
+let yprev = null
 
 const weshOut = () => {
     wesh('Usage ./client.js team id')
@@ -100,11 +102,15 @@ const main = async argv => {
                 ++x
             }
         }
+        if (isNaN(x)) x = xprev
+        if (isNaN(y)) y =yprev
         wesh(`${x} ${y}`)
         const pos = { x, y }
         players[`${player.team}${player.id}`].pos = pos
         wesh(players[`${player.team}${player.id}`])
         await db.set('players', JSON.stringify(players))
+        xprev = x
+        yprev = y
         io.emit('pos')
     })
 

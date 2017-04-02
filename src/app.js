@@ -136,10 +136,19 @@ app._io.on('connection', socket => {
         app._io.emit('players', await db.get('players'))
     })
 
-    socket.on('dead', data => {
-        wesh('dead')
-        wesh(data)
-        //TODO(receive the socket id of the dead socket and send it dead signal then remove change status or remove it from json)
+    socket.on('dead', async data => {
+        const deadPlayer = JSON.parse(data)
+        wesh(`${deadPlayer.team} -> ${deadPlayer.id} is dead`)
+        let socketToEmit = null
+        for (let i = 0; i < clientsId.length; ++i)
+            if (deadPlayer.socketId == clientsId[i].id) socketToEmit = clientsId[i]
+        if (socketToEmit !== null) socketToEmit.emit('dead', {})
+        let players = await db.get('players')
+        if (players === null || players === undefined) return
+        players = JSON.parse(players)
+        players[`${deadPlayer.team}${deadPlayer.id}`] = undefined
+        await db.set('players', JSON.stringify(players))
+        //TODO(check the number of player and if they are all the same team then send signal to browser)
     })
 
     socket.on('disconnect', async () => {
