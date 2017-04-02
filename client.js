@@ -72,8 +72,8 @@ const main = async argv => {
         let x;
         let y;
         if (first) {
-            x = getRandom(size)
-            y = getRandom(size)
+            x = getRandom(size / 2)
+            y = getRandom(size / 2)
             first = false
         }
         else {

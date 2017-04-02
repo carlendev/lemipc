@@ -109,12 +109,6 @@ router.put('/api/player/pos', player.generate)
 
 app.use(router.middleware())
 
-app._io.on('dead', data => {
-    wesh('dead')
-    wesh(data)
-    //TODO(receive the socket id of the dead socket and send it dead signal then remove change status or remove it from json)
-})
-
 app._io.on('connection', socket => {
     wesh(`New client connected (id=${socket.id})`)
     clientsId.push(socket)
@@ -140,6 +134,12 @@ app._io.on('connection', socket => {
     socket.on('pos', async (data) => {
         wesh('recieve pos')
         app._io.emit('players', await db.get('players'))
+    })
+
+    socket.on('dead', data => {
+        wesh('dead')
+        wesh(data)
+        //TODO(receive the socket id of the dead socket and send it dead signal then remove change status or remove it from json)
     })
 
     socket.on('disconnect', async () => {

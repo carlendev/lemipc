@@ -21,6 +21,10 @@
                 </ul>
             </div>
         </div>
+        <div id="deadContainer" style="position: absolute; z-index: 9999;">
+            <h3>Dead List</h3>
+            <ul id="deadList"></ul>
+        </div>
         <div class="grid">
             <form id="sizeFrom" style="width: 400px;" class="formStyle">
                 <div class="form-group">
@@ -41,7 +45,7 @@
         </div>
     <script>
         const cpy = obj => JSON.parse(JSON.stringify(obj))
-         const isDead = () => {
+         const isDead = list => {
              const key = Object.keys(players)
              const keyCpy = Object.keys(playersCpy)
              const len = key.length
@@ -75,21 +79,26 @@
                      if (obj1.team == playersCpy[keyCpy[i]].team && obj1.id == playersCpy[keyCpy[i]].id)
                          obj1Cpy = playersCpy[keyCpy[i]]
                  }
+                 let deadObj = null
                  if (objCpy == null) {
-                     wesh('ok1')
+                     deadObj = obj1
                      socket.emit('dead', obj1)
                  }
                  if (obj1Cpy == null) {
-                     wesh('ok2')
+                     deadObj = obj
                      socket.emit('dead', obj)
                  }
                  if (obj.pos.x == objCpy.pos.x && obj.pos.y == objCpy.pos.y) {
-                     wesh('ok3')
+                     deadObj = obj
                      socket.emit('dead', obj)
                  }
                  if (obj1.pos.x == obj1Cpy.pos.x && obj1.pos.y == obj1Cpy.pos.y) {
-                     wesh('ok4')
+                     deadObj = obj1
                      socket.emit('dead', obj1)
+                 }
+                 if (deadObj !== null) {
+                     const str = `Player from ${deadObj.team} with id ${deadObj.id} is dead`
+                     list.append(`<li>${str}</li>`)
                  }
              }
              playersCpy = cpy(players)
@@ -100,9 +109,12 @@
             const size = $('#sizeInput')
             const form = $('#sizeFrom')
             const alert = $('#alertInput')
+            const dead = $('#deadList')
+            const deadContainer = $('#deadContainer')
 
             canva.hide()
             alert.hide()
+            deadContainer.hide()
             $('#submitButton').click(e => {
                 e.preventDefault()
                 const sizeNb = size.val()
@@ -117,10 +129,11 @@
                         socket = io.connect('http://127.0.0.1:3030')
                         start()
                         canva.show()
+                        deadContainer.show()
                         socket.on('players', data => {
                             if (players !== null) {
                                 if (playersCpy === null) playersCpy = cpy(players)
-                                else isDead()
+                                else isDead(dead)
                             }
                             players = JSON.parse(data)
                             wesh(players)
