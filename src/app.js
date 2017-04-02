@@ -148,15 +148,20 @@ app._io.on('connection', socket => {
         players = JSON.parse(players)
         players[`${deadPlayer.team}${deadPlayer.id}`] = undefined
         await db.set('players', JSON.stringify(players))
-        players = await JSON.parse(db.get('players'))
+        players = await db.get('players')
+        players = JSON.parse(players)
         const keys = Object.keys(players)
         const len = keys.length
         let teams = []
         for (let i = 0; i < len; ++i)
             if (teams.indexOf(players[keys[i]].team) === -1) teams.push(players[keys[i]].team)
         const nbTeams = teams.length
-        //TODO(carlendev) don't forget to kill all the server after that
-        if (nbTeams === 1) app._io.emit('victory', JSON.stringify({ team: teams[0]} ))
+        wesh('nb teams')
+        wesh(nbTeams)
+        if (nbTeams === 1) {
+            await app._io.emit('victory', JSON.stringify({ team: teams[0]} ))
+            process.exit(0)
+        }
     })
 
     socket.on('disconnect', async () => {

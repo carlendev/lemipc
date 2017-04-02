@@ -151,7 +151,7 @@
                             }
                             Game.render(map, players)
                         })
-                        socket.on('finish', data => {
+                        socket.on('victory', data => {
                             const victory = JSON.parse(data)
                             wesh(victory)
                             canva.hide()
