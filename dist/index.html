@@ -98,7 +98,8 @@
                  }
                  if (deadObj !== null) {
                      const str = `Player from ${deadObj.team} with id ${deadObj.id} is dead`
-                     list.append(`<li>${str}</li>`)
+                     if (str !== prevStr) list.append(`<li>${str}</li>`)
+                     prevStr = str
                  }
              }
              playersCpy = cpy(players)

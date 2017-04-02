@@ -37,6 +37,7 @@ Loader.getImage = function (key) {
 const Game = {}
 let players = null
 let playersCpy = null
+let prevStr = null
 let socket
 let map
 let context
