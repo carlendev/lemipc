@@ -39,6 +39,7 @@
             <div class="canvas">
                 <canvas id="demo" width="700" height="700"></canvas>
             </div>
+            <div id="victoryContainer"></div>
         </div>
         <div class="footerPage">
             Developed by Yann Carlen and Quentin Muller
@@ -112,10 +113,12 @@
             const alert = $('#alertInput')
             const dead = $('#deadList')
             const deadContainer = $('#deadContainer')
+            const victoryContainer = $('#victoryContainer')
 
             canva.hide()
             alert.hide()
             deadContainer.hide()
+            victoryContainer.hide()
             $('#submitButton').click(e => {
                 e.preventDefault()
                 const sizeNb = size.val()
@@ -147,6 +150,15 @@
                                 else players[keys[i]].img = Game.player
                             }
                             Game.render(map, players)
+                        })
+                        socket.on('finish', data => {
+                            const victory = JSON.parse(data)
+                            wesh(victory)
+                            canva.hide()
+                            deadContainer.hide()
+                            victoryContainer.show()
+                            victoryContainer.append(`<h1>Team ${victory.team} win !</h1>`)
+                            socket = null
                         })
                     })
                     .catch(err => wesh(err))
