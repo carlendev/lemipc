@@ -148,7 +148,15 @@ app._io.on('connection', socket => {
         players = JSON.parse(players)
         players[`${deadPlayer.team}${deadPlayer.id}`] = undefined
         await db.set('players', JSON.stringify(players))
-        //TODO(check the number of player and if they are all the same team then send signal to browser)
+        players = await JSON.parse(db.get('players'))
+        const keys = Object.keys(players)
+        const len = keys.length
+        let teams = []
+        for (let i = 0; i < len; ++i)
+            if (teams.indexOf(players[keys[i]].team) === -1) teams.push(players[keys[i]].team)
+        const nbTeams = teams.length
+        //TODO(carlendev) don't forget to kill all the server after that
+        if (nbTeams === 1) app._io.emit('victory', JSON.stringify({ team: teams[0]} ))
     })
 
     socket.on('disconnect', async () => {
